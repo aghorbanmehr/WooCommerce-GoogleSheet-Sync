@@ -18,19 +18,29 @@ This project provides a Google Apps Script to integrate your WooCommerce store w
 
 ## Setup
 
-### 1. Create a Google Sheet
+### 1. Enable the WooCommerce REST API
+in WordPress dashboard
+Go to WooCommerce > Settings > Advanced > REST API
+Add Key
+Fill in the description
+select a user with appropriate permissions
+and set permissions to Read/Write
+Click Generate API Key
+Copy the Consumer Key and Consumer Secret to use it in the code.
+
+### 2. Create a Google Sheet
 
 Create a new Google Sheet in your Google Drive.
 
-### 2. Open Script Editor
+### 3. Open Script Editor
 
 In the Google Sheets, go to "Tools" > "Script editor".
 
-### 3. Copy and Paste the Code
+### 4. Copy and Paste the Code
 
 Copy the entire code from `WooCommerce-GoogleSheets-Sync.js` and paste it into the Script editor.
 
-### 4. Configure WooCommerce API Credentials
+### 5. Configure WooCommerce API Credentials
 
 Modify the `constants()` function in the script to include your WooCommerce API credentials:
 
@@ -45,14 +55,15 @@ function constants() {
 ```
 Replace YOUR_CONSUMER_KEY, YOUR_CONSUMER_SECRET, and YOUR_SITE_URL with your actual WooCommerce API credentials and store URL.
 
-5. Save the Script
+### 6. Save the Script
 Save the script with a descriptive name (e.g., "WooCommerceIntegration").
 
-6. Run the onOpen() Function
+### 7. Run the onOpen() Function
 Select the onOpen function in the Script editor's function dropdown.
 Click the "Run" button (play icon).
 Authorize the script to access your Google Sheet.
-7. Custom Menu
+
+### 8. Custom Menu
 A custom menu named "WordPress" will be added to the Google Sheet. It contains the following options:
 
 Fetch Products: Fetches product data from WooCommerce and populates the sheet.
