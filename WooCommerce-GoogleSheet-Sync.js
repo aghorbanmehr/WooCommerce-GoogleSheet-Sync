@@ -189,9 +189,9 @@ function constants() {
   }
   
   function updateProductPricesCaller() {
-    var consumerKey = 'YOUR_CONSUMER_KEY';
-    var consumerSecret = 'YOUR_CONSUMER_SECRET';
-    var siteUrl = 'YOUR_SITE_URL'; // e.g., 'https://yourstore.com/'
+    var consumerKey = constants()[0];
+    var consumerSecret = constants()[1];
+    var siteUrl = constants()[2];
     updateProductPrices(consumerKey, consumerSecret, siteUrl);
   }
   
