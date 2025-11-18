@@ -1,106 +1,98 @@
-# WooCommerce-GoogleSheet-Sync
-This project provides a Google Apps Script to integrate your WooCommerce store with Google Sheets. It allows you to fetch product data, update prices, manage stock, and manage your WooCommerce products directly from a Google Sheet.
+Of course. Here is the optimized README based on the code changes and enhancements, written in English.
 
-## Features
+-----
 
-*   **Fetch Products:** Retrieves product data from your WooCommerce store and populates a Google Sheet.
-*   **Update Prices:** You can update product prices in WooCommerce by modifying the Google Sheet.
-*   **Variable Product Support:** Handles variable products and their variations.
-*   **Custom Menu:** Adds a custom menu to Google Sheets for easy access to the script's functions.
-*   **Update Checkboxes:** Adds checkboxes to select products for price updates easily.
-*   **Batch Processing:** Updates product prices in batches to avoid exceeding API limits.
+# WooCommerce-GoogleSheet-Sync (Optimized Version)
 
-## Prerequisites
+This project provides an advanced, high-performance Google Apps Script (GAS) designed to tightly integrate your **WooCommerce** store with **Google Sheets**. It allows you to reliably fetch product data, manage stock, update prices, and handle product variations directly from a spreadsheet.
 
-*   A Google account.
-*   A WooCommerce store.
-*   WooCommerce API enabled with valid Consumer Key and Consumer Secret.
+## ✨ Key Features & Optimizations
 
-## Setup
+This version is optimized for speed, reliability, and adherence to both Google Apps Script and WooCommerce API limits:
 
-### 1. Enable the WooCommerce REST API
-in WordPress dashboard
-Go to WooCommerce > Settings > Advanced > REST API
-Add Key
-Fill in the description
-select a user with appropriate permissions
-and set permissions to Read/Write
-Click Generate API Key
-Copy the Consumer Key and Consumer Secret to use it in the code.
+  * **⚡ High-Speed Fetching (Batch Writing):** Achieves significant performance gains by using **Batch Writing** to Google Sheets, updating hundreds of rows in a single operation instead of slow row-by-row updates.
+  * **🔁 Continuation Management:** Includes built-in logic (`MAX_PRODUCTS_PER_RUN`) to prevent the script from hitting the Google Apps Script execution time limit (around 6 minutes). It saves the page number and resumes fetching automatically upon the next execution.
+  * **📦 Efficient Batch API Updates:** Uses the WooCommerce REST API batch endpoints to update prices and stock for products and variations in small, controlled batches (50-100 per request) to respect API Rate Limits.
+  * **🛡️ Robust Architecture:** Eliminates the inefficient, loop-based `findParentProductId` function, relying instead on the `Parent` column data for quick identification of variable products during updates.
+  * **🛒 Full Variable Product Support:** Correctly fetches and updates variable products and their corresponding variations.
+  * **⚙️ Custom UI:** Adds a dedicated **"WordPress / WooCommerce"** menu to the Google Sheet for easy access to all functions.
 
-### 2. Create a Google Sheet
+## 📋 Prerequisites
 
-Create a new Google Sheet in your Google Drive.
+1.  A Google account.
+2.  An active WooCommerce store.
+3.  WooCommerce API enabled with a valid **Consumer Key** and **Consumer Secret** (Read/Write permissions required).
 
-### 3. Open Script Editor
+## 🛠️ Setup and Installation
 
-In the Google Sheets, go to "Tools" > "Script editor".
+### 1\. Enable WooCommerce REST API
 
-### 4. Copy and Paste the Code
+1.  In your WordPress dashboard, go to **WooCommerce** \> **Settings** \> **Advanced** \> **REST API**.
+2.  Click **Add Key**.
+3.  Fill in the description, select the appropriate user, and set **Permissions** to **Read/Write**.
+4.  Click **Generate API Key** and copy the resulting **Consumer Key** and **Consumer Secret**.
 
-Copy the entire code from `WooCommerce-GoogleSheets-Sync.js` and paste it into the Script editor.
+### 2\. Create and Populate the Google Sheet
 
-### 5. Configure WooCommerce API Credentials
+1.  Create a new Google Sheet in your Google Drive.
+2.  In the Google Sheet, go to **Extensions** \> **Apps Script**.
+3.  Copy the entire optimized code and paste it into the Script editor, replacing any existing code.
 
-Modify the `constants()` function in the script to include your WooCommerce API credentials:
+### 3\. Configure API Credentials
+
+Locate the `constants()` function at the top of the script and replace the placeholder values with your actual credentials:
 
 ```javascript
-// WooCommerce-GoogleSheets-Sync.js
 function constants() {
-    var consumerKey = 'YOUR_CONSUMER_KEY';
-    var consumerSecret = 'YOUR_CONSUMER_SECRET';
-    var siteUrl = 'YOUR_SITE_URL'; // e.g., 'https://yourstore.com/'
+    const consumerKey = 'YOUR_CONSUMER_KEY';
+    const consumerSecret = 'YOUR_CONSUMER_SECRET';
+    // IMPORTANT: Site URL must NOT end with a trailing slash (e.g., 'https://yourstore.com')
+    const siteUrl = 'https://YOUR_STORE_URL'; 
     return [consumerKey, consumerSecret, siteUrl];
-  }
+}
 ```
-Replace YOUR_CONSUMER_KEY, YOUR_CONSUMER_SECRET, and YOUR_SITE_URL with your actual WooCommerce API credentials and store URL.
 
-### 6. Save the Script
-Save the script with a descriptive name (e.g., "WooCommerceIntegration").
+### 4\. Save and Authorize
 
-### 7. Run the onOpen() Function
-Select the onOpen function in the Script editor's function dropdown.
-Click the "Run" button (play icon).
-Authorize the script to access your Google Sheet.
+1.  Save the script (e.g., as "WooCommerceIntegration").
+2.  In the Apps Script editor, select the **`onOpen`** function from the function dropdown and click the **Run (►)** button.
+3.  Review and **authorize** the script to access your Google Sheet and external services (WooCommerce API).
 
-### 8. Custom Menu
-A custom menu named "WordPress" will be added to the Google Sheet. It contains the following options:
+## 🚀 Usage Guide
 
-Fetch Products: Fetches product data from WooCommerce and populates the sheet.
-Send Updated Prices: Updates product prices in WooCommerce based on the changes made in the sheet.
-Usage
-Fetching Products
-Click on "WordPress" > "Fetch Products" in the Google Sheet menu.
-The script will create a new sheet named "Products" (or clear the existing one) and populate it with product data from your WooCommerce store.
-A temporary sheet named "TempFetch" is created to keep track of the page number during fetching. This sheet is automatically deleted after the process is complete.
-Updating Prices
-In the "Products" sheet, modify the "Sale price" and/or "Regular price" columns for the products you want to update.
-Check the "Update" column for each product you've modified.
-Click on "WordPress" > "Send Updated Prices" in the Google Sheet menu.
-The script will update the prices in your WooCommerce store based on the changes you made in the sheet.
-The "Update" checkboxes will be automatically unchecked after the update.
-Functions
-constants(): Configures WooCommerce API access information.
-fetchProducts(): Fetches products from WooCommerce and populates the Google Sheet.
-fetchProductBatch(siteUrl, consumerKey, consumerSecret, page, perPage): Retrieves a batch of products from the WooCommerce API.
-fetchVariations(siteUrl, consumerKey, consumerSecret, productId): Retrieves variations for a variable product.
-getVariationAttributes(variation): Combines variation attributes into a string.
-makeAuthenticatedRequest(url, params, consumerKey, consumerSecret): Sends an authenticated request to the WooCommerce API.
-hideColumns(sheet, columnsToHide, headers): Hides specified columns in the Google Sheet.
-refreshUpdateColumn(): Creates or refreshes the "Update" checkbox column.
-onOpen(): Creates a custom menu in Google Sheets.
-onEdit(e): Automatically checks the "Update" checkbox when a price is modified.
-updateProductPrices(consumerKey, consumerSecret, siteUrl): Updates product prices in WooCommerce based on the Google Sheet.
-sendBatchRequest(batch, url, consumerKey, consumerSecret): Sends a batch request to the WooCommerce API to update product data.
-findParentProductId(data, variationId, idCol, typeCol): Finds the parent product ID for a given variation ID.
-Notes
-The script uses batch processing to update product prices, which helps to avoid exceeding API limits. The batch size is set to 100 products per batch.
-The script automatically resizes columns and hides unnecessary columns for better readability.
-The TempFetch sheet is used to store the current page number during the fetch process. It is automatically created and deleted by the script.
-The onEdit(e) function automatically checks the "Update" checkbox when a price is modified in the "Sale price" or "Regular price" columns.
-Ensure that your WooCommerce API keys have the necessary permissions to read and write product data.
-Error Handling
-The script includes basic error handling to log errors to the Logger. Check the script editor's execution log for any errors that may occur during the process.
+A custom menu named **"WordPress / WooCommerce"** will appear in your Google Sheet after successful authorization.
 
-Disclaimer
-This script is provided as-is and without any warranty. Use it at your own risk. The author is not responsible for any data loss or other issues that may arise from using this script.
+### 1\. Fetching Products
+
+  * Click on **"WordPress / WooCommerce"** \> **"1. Fetch Products"**.
+  * The script will create a new sheet named **"Products"** (or clear the existing one) and populate it with data from your WooCommerce store, including variations.
+  * Columns like `ID`, `Type`, and `Parent` are automatically hidden for readability.
+  * If your store has a large number of products, you may need to run this command multiple times. The script will remember the page where it left off and continue fetching.
+
+### 2\. Syncing Prices & Stock
+
+1.  In the **"Products"** sheet, modify the **"Sale price"**, **"Regular price"**, **"موجود است؟" (In Stock)**, or **"موجودی" (Stock Quantity)** columns.
+2.  The **"Update"** checkbox column will automatically be checked for any row that is modified (via the `onEdit` trigger).
+3.  Click on **"WordPress / WooCommerce"** \> **"2. Sync Prices & Stock"**.
+4.  The script will read only the rows marked with **"Update = true"** and send the data in batches to your WooCommerce store.
+5.  Upon successful synchronization, the **"Update"** checkboxes will automatically be set back to `false`.
+
+### 3\. Refreshing Checkboxes
+
+  * If the checkbox column is accidentally deleted or corrupted, you can restore it by clicking **"WordPress / WooCommerce"** \> **"3. Refresh Update Checkboxes"**.
+
+## 🗂️ Key Script Functions
+
+| Function | Description |
+| :--- | :--- |
+| `fetchProducts()` | Main execution for fetching products, managing pagination, and performing high-speed batch writing to the sheet. |
+| `updateProductPrices()` | Reads the marked data and handles sending multiple batch update requests to the WooCommerce API. |
+| `sendBatchRequest()` | Handles the authenticated POST request for WooCommerce batch updates, including basic error logging. |
+| `onEdit(e)` | Automatically checks the `Update` column checkbox when a price or stock column is modified. |
+| `onOpen()` | Creates the custom "WordPress / WooCommerce" menu in the sheet UI. |
+
+## ⚠️ Notes
+
+  * **API Throttling:** The script incorporates brief delays and manages updates in batches to minimize the risk of hitting WooCommerce API Rate Limits.
+  * **Data Integrity:** Ensure that the API keys have the necessary **Read/Write** permissions to avoid update failures.
+  * **Troubleshooting:** The script includes logging for errors (`Logger.log()`). If issues occur, check the **Executions** log in the Apps Script editor.
